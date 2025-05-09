@@ -20,9 +20,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <WalletContextProvider>
+    
       <RouterProvider router={router} />
-    </WalletContextProvider>
+    
   )
 }
 

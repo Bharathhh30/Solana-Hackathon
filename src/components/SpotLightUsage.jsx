@@ -2,7 +2,6 @@ import React from "react";
 import { cn } from "../lib/utils";
 import { Spotlight } from "../components/ui/SpotLight";
 import { Link } from "react-router-dom";
-import { ContainerTextFlip } from "../components/ui/Container-Text-Flip";
 import { Button } from "../components/ui/Moving-border";
 
 function SpotlightPreview() {
