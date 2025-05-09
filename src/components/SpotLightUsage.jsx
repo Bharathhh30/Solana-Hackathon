@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { ContainerTextFlip } from "../components/ui/Container-Text-Flip";
 import { Button } from "../components/ui/Moving-border";
 
-export function SpotlightPreview() {
+function SpotlightPreview() {
   return (
     <div className="relative flex flex-col min-h-screen w-full overflow-hidden  bg-black/[0.96] antialiased md:items-center md:justify-center">
       <div
@@ -41,3 +41,5 @@ export function SpotlightPreview() {
     </div>
   );
 }
+
+export default SpotlightPreview;
