@@ -45,7 +45,7 @@ export default function Tipping() {
     if (!recipient || !amount) return;
 
     try {
-      const response = await fetch("http://localhost:5000/api/blink", {
+      const response = await fetch("https://drip-4w3p.onrender.com/api/blink", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ recipient, amount }),
