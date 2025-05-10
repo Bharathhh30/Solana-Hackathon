@@ -1,20 +1,26 @@
-
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
-import { useState } from 'react';
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
+import {
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
+import { useState } from "react";
 
 export default function Tipping() {
   const { publicKey, sendTransaction } = useWallet();
-  const [recipient, setRecipient] = useState('');
-  const [amount, setAmount] = useState('');
-  const [status, setStatus] = useState('');
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [status, setStatus] = useState("");
+  const [blinkUrl, setBlinkUrl] = useState(""); // New state to store Blink URL
 
   const handleTip = async () => {
     if (!publicKey || !recipient || !amount) return;
 
     try {
-      const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+      const connection = new Connection("https://api.devnet.solana.com", "confirmed");
       const recipientPubKey = new PublicKey(recipient);
       const lamports = parseFloat(amount) * LAMPORTS_PER_SOL;
 
@@ -27,11 +33,34 @@ export default function Tipping() {
       );
 
       const signature = await sendTransaction(transaction, connection);
-      await connection.confirmTransaction(signature, 'confirmed');
+      await connection.confirmTransaction(signature, "confirmed");
       setStatus(`✅ Tip sent! Signature: ${signature}`);
     } catch (err) {
       console.error(err);
-      setStatus('❌ Failed to send tip.');
+      setStatus("❌ Failed to send tip.");
+    }
+  };
+
+  const handleBlink = async () => {
+    if (!recipient || !amount) return;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/blink", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipient, amount }),
+      });
+
+      const data = await response.json();
+
+      if (data.blinkUrl) {
+        setBlinkUrl(data.blinkUrl); // Update the state with the Blink URL
+        window.open(data.blinkUrl, "_blank"); // Open the Blink URL in a new tab
+      } else {
+        console.error("No blinkUrl returned");
+      }
+    } catch (err) {
+      console.error("Blink error:", err);
     }
   };
 
@@ -63,10 +92,24 @@ export default function Tipping() {
         >
           Send Tip
         </button>
+        <button
+          onClick={handleBlink}
+           className="w-full py-3 mt-3 bg-green-500 hover:bg-green-600 rounded-lg text-lg font-semibold transition"
+        >
+          Send via Blink
+        </button>
 
         {status && (
           <p className="mt-4 text-sm text-center text-gray-300 break-words">
             {status}
+          </p>
+        )}
+
+        {blinkUrl && (
+          <p className="mt-4 text-sm text-center text-gray-300 break-words">
+            <a href={blinkUrl} target="_blank" rel="noopener noreferrer">
+              Click here to view the Blink URL
+            </a>
           </p>
         )}
       </div>

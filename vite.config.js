@@ -9,3 +9,6 @@ export default defineConfig({
   plugins: [react(),tailwindcss(),nodePolyfills()
 ],
 })
+
+
+// got to know about polyfills , which is used to function in browser environment
